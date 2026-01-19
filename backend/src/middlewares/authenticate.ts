@@ -23,7 +23,7 @@ const authenticate: RequestHandler = (req, res, next) => {
   // If token is expired/invalid, send 401.
   // This allows the frontend to catch the 401 and call /auth/refresh.
   appAssert(
-    payload,
+    payload?.userId && payload.sessionId,
     HTTP_STATUS.UNAUTHORIZED,
     "Invalid or expired token",
     AppErrorCode.InvalidAccessToken
