@@ -37,3 +37,9 @@ Thumbs.db
 # Coverage/Testing
 coverage/
 .nyc_output/
+
+# Linting / Tool caches
+.eslintcache
+
+# Docker
+.dockerignore
