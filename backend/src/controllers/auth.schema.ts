@@ -14,10 +14,7 @@ export const emailSchema = z
 export const passwordSchema = z
   .string()
   .min(12, "Password must be at least 12 characters long")
-  .max(64, "Password must not exceed 64 characters")
-  .refine((val) => !/^(.)\1+$/.test(val), {
-    message: "Password is too simple (avoid repeating characters)",
-  });
+  .max(64, "Password must not exceed 64 characters");
 
 // Validates that a string is a valid MongoDB ObjectId
 export const verificationCodeSchema = z
