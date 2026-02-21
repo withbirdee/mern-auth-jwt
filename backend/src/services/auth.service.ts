@@ -10,7 +10,7 @@ import {
   thirtyDaysFromNow,
 } from "../utils/date.js";
 import { VerificationCode } from "../constants/verificationCodeType.js";
-import { NODE_ENV, ORIGIN_APP } from "../constants/env.js";
+import { NODE_ENV, APP_ORIGIN } from "../constants/env.js";
 import sendMail from "../utils/sendMail.js";
 import {
   getPasswordResetTemplate,
@@ -45,7 +45,7 @@ export async function createUserAccount(request: RegisterParams) {
   });
 
   // Construct the secure verification link
-  const url = `${ORIGIN_APP}/auth/email/verify/${verificationCodeDocument._id}`;
+  const url = `${APP_ORIGIN}/auth/email/verify/${verificationCodeDocument._id}`;
 
   // Notify the user via email. Failures are logged but do not block the registration flow.
   const { error } = await sendMail({
@@ -76,7 +76,7 @@ export async function verifyEmail(code: string) {
   appAssert(
     verificationCodeDocument,
     HTTP_STATUS.NOT_FOUND,
-    "Invalid or expired verification link."
+    "Invalid or expired verification link.",
   );
 
   // Validate token lifespan; perform proactive cleanup if expired
@@ -86,14 +86,14 @@ export async function verifyEmail(code: string) {
     appAssert(
       false,
       HTTP_STATUS.UNAUTHORIZED,
-      "Invalid or expired verification link."
+      "Invalid or expired verification link.",
     );
   }
 
   const verifiedUser = await UserModel.findByIdAndUpdate(
     verificationCodeDocument.userId,
     { verified: true },
-    { new: true }
+    { new: true },
   );
   appAssert(verifiedUser, HTTP_STATUS.NOT_FOUND, "User not found");
 
@@ -142,7 +142,7 @@ export async function refreshUserAccessToken(sessionId: string) {
   appAssert(
     session && session.expiresAt > new Date(),
     HTTP_STATUS.UNAUTHORIZED,
-    "Session expired or not found"
+    "Session expired or not found",
   );
 
   /**
@@ -182,7 +182,7 @@ export async function sendPasswordResetEmail(email: string) {
   appAssert(
     user,
     HTTP_STATUS.OK,
-    "If an account exists with that email, a reset link has been sent."
+    "If an account exists with that email, a reset link has been sent.",
   );
 
   /**
@@ -207,7 +207,7 @@ export async function sendPasswordResetEmail(email: string) {
    * We only pass the unique ID. We do not pass 'email' or 'expiresAt' in
    * the URL to prevent parameter tampering or info leakage.
    */
-  const url = `${ORIGIN_APP}/auth/password/reset?code=${verificationCode._id}`;
+  const url = `${APP_ORIGIN}/auth/password/reset?code=${verificationCode._id}`;
 
   // Dispatch the email. Failures are logged but do not change the user-facing response.
   const { error } = await sendMail({
@@ -238,7 +238,7 @@ export async function resetPassword({
   appAssert(
     verificationCodeDocument && verificationCodeDocument.expiresAt > new Date(),
     HTTP_STATUS.UNAUTHORIZED,
-    "Invalid or expired verification code"
+    "Invalid or expired verification code",
   );
 
   const user = await UserModel.findById(verificationCodeDocument.userId);

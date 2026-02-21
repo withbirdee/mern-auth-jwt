@@ -5,9 +5,12 @@ import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import authenticate from "./middlewares/authenticate.js";
 import sessionRoutes from "./routes/session.route.js";
+import cors from "cors";
+import { corsOptions } from "./configs/cors.js";
 
 const app = express();
 
+app.use(cors(corsOptions));
 // Security: Identify real user IPs behind proxies (Vercel, Render, AWS)
 app.set("trust proxy", 1);
 

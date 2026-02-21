@@ -9,7 +9,7 @@ const envSchema = z.object({
   // Clean these because they have strict formats (URL/Email)
   MONGO_URI: z.string().trim().pipe(z.url()),
   EMAIL_SENDER: z.string().trim().pipe(z.email()),
-  ORIGIN_APP: z.string().trim().pipe(z.url()),
+  APP_ORIGIN: z.string().trim().pipe(z.url()),
 
   // Keep these raw (Secrets must be exact)
   JWT_SECRET: z.string().min(1),
@@ -39,5 +39,5 @@ export const {
   JWT_SECRET_REFRESH,
   RESEND_API_KEY,
   EMAIL_SENDER,
-  ORIGIN_APP,
+  APP_ORIGIN,
 } = result.data;
