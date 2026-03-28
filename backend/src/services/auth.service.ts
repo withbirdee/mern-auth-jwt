@@ -207,7 +207,7 @@ export async function sendPasswordResetEmail(email: string) {
    * We only pass the unique ID. We do not pass 'email' or 'expiresAt' in
    * the URL to prevent parameter tampering or info leakage.
    */
-  const url = `${APP_ORIGIN}/auth/password/reset?code=${verificationCode._id}`;
+  const url = `${APP_ORIGIN}/password/reset?code=${verificationCode._id}`;
 
   // Dispatch the email. Failures are logged but do not change the user-facing response.
   const { error } = await sendMail({
