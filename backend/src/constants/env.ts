@@ -6,12 +6,10 @@ const envSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
 
-  // Clean these because they have strict formats (URL/Email)
-  MONGO_URI: z.string().trim().pipe(z.url()),
-  EMAIL_SENDER: z.string().trim().pipe(z.email()),
-  APP_ORIGIN: z.string().trim().pipe(z.url()),
+  MONGO_URI: z.string().trim().min(1),
+  EMAIL_SENDER: z.string().trim().min(1),
+  APP_ORIGIN: z.string().trim().min(1),
 
-  // Keep these raw (Secrets must be exact)
   JWT_SECRET: z.string().min(1),
   JWT_SECRET_REFRESH: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
@@ -30,6 +28,7 @@ if (!result.success) {
   console.error("\nCheck your .env file or deployment settings.");
   process.exit(1);
 }
+console.log(result);
 
 export const {
   PORT,
