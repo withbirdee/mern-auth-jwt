@@ -45,7 +45,7 @@ export async function createUserAccount(request: RegisterParams) {
   });
 
   // Construct the secure verification link
-  const url = `${APP_ORIGIN}/auth/email/verify/${verificationCodeDocument._id}`;
+  const url = `${APP_ORIGIN}/email/verify/${verificationCodeDocument._id}`;
 
   // Notify the user via email. Failures are logged but do not block the registration flow.
   const { error } = await sendMail({

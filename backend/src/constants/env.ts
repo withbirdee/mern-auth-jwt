@@ -28,7 +28,6 @@ if (!result.success) {
   console.error("\nCheck your .env file or deployment settings.");
   process.exit(1);
 }
-console.log(result);
 
 export const {
   PORT,
