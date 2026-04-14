@@ -2,8 +2,19 @@ import mongoose from "mongoose";
 import { MONGO_URI } from "../constants/env.js";
 
 async function connectToDatabase() {
-  await mongoose.connect(MONGO_URI);
-  console.log("Successfully connected to MongoDB.");
+  try {
+    await mongoose.connect(MONGO_URI, {
+      // These match the official "ServerApiVersion" suggestions
+      serverApi: {
+        version: "1",
+        strict: true,
+        deprecationErrors: true,
+      },
+    });
+    console.log("Successfully connected to MongoDB.");
+  } catch (error) {
+    console.error("Initial connection error:", error);
+  }
 }
 
 // Initial or subsequent successful connection
