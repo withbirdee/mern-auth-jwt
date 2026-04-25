@@ -30,12 +30,13 @@ export async function registerHandler(req: Request, res: Response) {
     userAgent: req.headers["user-agent"],
   });
 
-  const { user, accessToken, refreshToken } = await createUserAccount(request);
+  const { user, accessToken, refreshToken, url } =
+    await createUserAccount(request);
 
   // Set HTTP-only cookies and return the created user profile
   return setAuthCookies({ res, accessToken, refreshToken })
     .status(HTTP_STATUS.CREATED)
-    .json(user);
+    .json({ user, url });
 }
 
 /**
@@ -112,7 +113,7 @@ export async function refreshHandler(req: Request, res: Response) {
   }
 
   const { accessToken, refreshToken } = await refreshUserAccessToken(
-    payload.sessionId
+    payload.sessionId,
   );
 
   return setAuthCookies({ res, accessToken, refreshToken })
@@ -126,7 +127,7 @@ export async function refreshHandler(req: Request, res: Response) {
 export async function sendPasswordResetHandler(req: Request, res: Response) {
   const email = emailSchema.parse(req.body.email);
 
-  await sendPasswordResetEmail(email);
+  const { url } = await sendPasswordResetEmail(email);
 
   /**
    * ANTI-ENUMERATION SECURITY:
@@ -137,6 +138,7 @@ export async function sendPasswordResetHandler(req: Request, res: Response) {
   return res.status(HTTP_STATUS.OK).json({
     message:
       "If an account exists with that email, a reset link has been sent.",
+    url,
   });
 }
 

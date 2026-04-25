@@ -61,7 +61,12 @@ export async function createUserAccount(request: RegisterParams) {
   const accessToken = signToken("accessToken", { userId, sessionId });
   const refreshToken = signToken("refreshToken", { sessionId });
 
-  return { user, accessToken, refreshToken };
+  return {
+    user,
+    accessToken,
+    refreshToken,
+    url: NODE_ENV === "development" ? url : undefined,
+  };
 }
 
 /**
