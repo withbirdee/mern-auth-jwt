@@ -23,11 +23,11 @@ app.get("/", (req, res) => {
 });
 
 // Auth Routes
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 // Protected Routes
-app.use("/user", authenticate, userRoutes);
-app.use("/sessions", authenticate, sessionRoutes);
+app.use("/api/user", authenticate, userRoutes);
+app.use("/api/sessions", authenticate, sessionRoutes);
 
 // Global Error Handler
 app.use(errorHandler);
