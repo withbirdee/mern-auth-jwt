@@ -3,43 +3,43 @@ node_modules/
 .pnp
 .pnp.js
 
-# Environment Variables (Crucial for Security)
+# Environment Variables (Security)
 .env
 .env.*
+*.local
 !.env.example
 
 # Build Output
 dist/
+dist-ssr/
 build/
 out/
 
-# TypeScript
+# TypeScript & Tooling
 tsconfig.tsbuildinfo
+.eslintcache
+.nyc_output/
+coverage/
 
 # Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-logs/
-*.log
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS Specific
+# OS / IDEs
 .DS_Store
-Thumbs.db
-
-# IDEs/Editors
 .vscode/
 .idea/
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
-
-# Coverage/Testing
-coverage/
-.nyc_output/
-
-# Linting / Tool caches
-.eslintcache
+*.sln
+*.sw?
 
 # Docker
 .dockerignore

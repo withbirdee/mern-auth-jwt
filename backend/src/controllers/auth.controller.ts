@@ -5,7 +5,7 @@ import {
   emailSchema,
   verificationCodeSchema,
   resetPasswordSchema,
-} from "./auth.schema.js";
+} from "../../../shared/auth.schema.js";
 import {
   createUserAccount,
   loginUser,
