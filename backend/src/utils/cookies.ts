@@ -7,12 +7,25 @@ import {
 
 export const REFRESH_PATH = "/auth/refresh";
 
+const isDev = NODE_ENV === "development";
 const defaults: CookieOptions = {
   httpOnly: true,
-  // SameSite 'strict' is the most secure for auth tokens to prevent CSRF
-  sameSite: "strict",
-  // Secure must be true in production to ensure tokens are only sent over HTTPS
-  secure: NODE_ENV !== "development",
+  /**
+   * SameSite=None is required for cross-site cookies.
+   *
+   * Use this in production when your frontend and backend
+   * are on different origins (e.g., app.example.com → api.example.com).
+   *
+   * Important:
+   * - Must be used together with `secure: true`
+   * - Requires HTTPS, otherwise browsers will reject the cookie
+   */
+  sameSite: isDev ? "lax" : "none",
+  /**
+   * Cookies must be sent only over HTTPS in production.
+   * Browsers will block SameSite=None cookies if `secure` is false.
+   */
+  secure: isDev ? false : true,
 };
 
 /**
@@ -31,7 +44,7 @@ const getAccessTokenOptions = (): CookieOptions => ({
 const getRefreshTokenOptions = (): CookieOptions => ({
   ...defaults,
   expires: new Date(
-    Date.now() + REFRESH_TOKEN_LIFETIME_DAYS * 24 * 60 * 60 * 1000
+    Date.now() + REFRESH_TOKEN_LIFETIME_DAYS * 24 * 60 * 60 * 1000,
   ),
   path: REFRESH_PATH,
 });
