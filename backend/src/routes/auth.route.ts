@@ -4,11 +4,15 @@ import {
   logoutHandler,
   refreshHandler,
   registerHandler,
+  requestEmailVerificationHandler,
   resetPasswordHandler,
   sendPasswordResetHandler,
   verifyEmailHandler,
 } from "../controllers/auth.controller.js";
-import passwordResetLimiter from "../middlewares/rateLimit.js";
+import {
+  passwordResetLimiter,
+  emailVerificationRequestLimiter,
+} from "../middlewares/rateLimit.js";
 
 const authRoutes = Router();
 
@@ -18,9 +22,14 @@ authRoutes.get("/logout", logoutHandler);
 authRoutes.get(`/refresh`, refreshHandler);
 authRoutes.get("/email/verify/:code", verifyEmailHandler);
 authRoutes.post(
+  "/email/verify/request",
+  emailVerificationRequestLimiter,
+  requestEmailVerificationHandler,
+);
+authRoutes.post(
   `/password/forgot`,
   passwordResetLimiter,
-  sendPasswordResetHandler
+  sendPasswordResetHandler,
 );
 authRoutes.post(`/password/reset`, resetPasswordHandler);
 

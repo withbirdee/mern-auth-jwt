@@ -108,6 +108,58 @@ export async function verifyEmail(code: string) {
 }
 
 /**
+ * Resending email verification link to unverified users
+ * Returns URL only in development environment
+ */
+export async function sendEmailVerification(email: string) {
+  const user = await UserModel.findOne({ email });
+
+  // Don't reveal if user exists or not
+  appAssert(
+    user,
+    HTTP_STATUS.OK,
+    "If an account exists and requires verification, you'll receive a link shortly.",
+  );
+
+  // Prevent resending verification links to already verified accounts
+  appAssert(
+    !user.verified,
+    HTTP_STATUS.OK,
+    "If an account exists and requires verification, you'll receive a link shortly.",
+  );
+  const userId = user._id.toString();
+
+  // This ensures only one valid verification link exists at a time
+  // Prevents confusion and potential security issues with multiple valid tokens
+  await VerificationCodeModel.deleteMany({
+    userId: user._id,
+    type: VerificationCode.EmailVerification,
+  });
+
+  const verificationCode = await VerificationCodeModel.create({
+    userId,
+    type: VerificationCode.EmailVerification,
+    expiresAt: oneYearFromNow(),
+  });
+
+  const url = `${APP_ORIGIN}/email/verify/${verificationCode._id}`;
+
+  // Log email failures but don't throw - prevents revealing internal state to users
+  const { error } = await sendMail({
+    to: user.email,
+    ...getVerifyEmailTemplate(url),
+  });
+
+  if (error) {
+    console.error("Password reset email failed to send:", { error });
+  }
+
+  return {
+    url: NODE_ENV === "development" ? url : undefined,
+  };
+}
+
+/**
  * Authenticates a user's identity and creates a persistent session record.
  */
 export async function loginUser(request: LoginParams) {

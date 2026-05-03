@@ -10,6 +10,7 @@ import {
   createUserAccount,
   loginUser,
   refreshUserAccessToken,
+  sendEmailVerification,
   resetPassword,
   sendPasswordResetEmail,
   verifyEmail,
@@ -50,6 +51,24 @@ export async function verifyEmailHandler(req: Request, res: Response) {
 
   return res.status(HTTP_STATUS.OK).json({
     message: "Email verified successfully.",
+  });
+}
+
+/**
+ * Handler for requesting email verification link
+ */
+export async function requestEmailVerificationHandler(
+  req: Request,
+  res: Response,
+) {
+  const email = emailSchema.parse(req.body.email);
+
+  const { url } = await sendEmailVerification(email);
+
+  return res.status(HTTP_STATUS.OK).json({
+    message:
+      "If an account exists and requires verification, you'll receive a link shortly.",
+    url,
   });
 }
 
