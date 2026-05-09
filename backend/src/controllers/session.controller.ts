@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import SessionModel from "../models/session.model.js";
 import appAssert from "../utils/appAssert.js";
 import { HTTP_STATUS } from "../constants/http.js";
-import { verificationCodeSchema } from "../../../shared/auth.schema.js";
+import { verificationCodeSchema } from "@shared/auth.schema.js";
 import { clearAuthCookies } from "../utils/cookies.js";
 
 export async function getSessionsHandler(req: Request, res: Response) {
