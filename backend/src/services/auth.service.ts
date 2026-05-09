@@ -20,7 +20,7 @@ import {
   LoginParams,
   RegisterParams,
   ResetPasswordParams,
-} from "@shared/auth.schema.js";
+} from "../../../shared/auth.schema.js";
 
 /**
  * Creates a new user account, generates a verification token,
