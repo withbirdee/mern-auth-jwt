@@ -1,24 +1,29 @@
 import { CorsOptions } from "cors";
 import { APP_ORIGIN, NODE_ENV } from "../constants/env.js";
 
-// Convert comma-separated string to array
-const allowedOrigins = APP_ORIGIN.split(",").map((origin) => origin.trim());
-
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    // Allow requests without origin (Postman, mobile apps, curl)
-    if (!origin) {
-      return callback(null, true);
+    // Allow non-browser requests (Postman/Mobile)
+    if (!origin) return callback(null, true);
+
+    // Production: Only allow the official APP_ORIGIN
+    if (NODE_ENV === "production") {
+      return origin === APP_ORIGIN
+        ? callback(null, true)
+        : callback(new Error("CORS Error: Origin not allowed in production"));
     }
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+    // Development: Allow localhost and home network IPs (192.168.x.x)
+    const isLocal =
+      origin.startsWith("http://localhost") ||
+      origin.startsWith("http://127.0.0.1") ||
+      origin.startsWith("http://192.168.");
 
-    // Log rejected origin
-    console.warn(`[CORS] Rejected request from origin: ${origin}`);
+    if (isLocal) return callback(null, true);
 
-    return callback(new Error("Not allowed by CORS"));
+    // Log the rejected origin to help with debugging
+    console.warn(`[CORS Rejected]: ${origin}`);
+    return callback(new Error("CORS Error: Origin not allowed in development"));
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
